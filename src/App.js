@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import axios from 'axios';
 
 import MoviesList from './components/MoviesList';
@@ -9,8 +9,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const retryTimeout = useRef(null);
-  
-  const fetchMoviesHandler = async () => {
+
+  const fetchMoviesHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -28,27 +28,39 @@ function App() {
       setIsLoading(false);
       retryTimeout.current = setTimeout(fetchMoviesHandler, 5000);
     }
-  };
+  }, []);
 
-  const cancelRetryHandler = () => {
+  useEffect(() => {
+    fetchMoviesHandler();
+    return () => {
+      if (retryTimeout.current) {
+        clearTimeout(retryTimeout.current);
+      }
+    };
+  }, [fetchMoviesHandler]);
+
+  const cancelRetryHandler = useCallback(() => {
     if (retryTimeout.current) {
       clearTimeout(retryTimeout.current);
       setError(null);
     }
-  };
+  }, []);
+
+  const moviesListMemo = useMemo(() => {
+    return <MoviesList movies={movies} />;
+  }, [movies]);
 
   return (
     <React.Fragment>
       <section>
-        <button onClick={fetchMoviesHandler}>Fetch Movies</button>
         {error && <button onClick={cancelRetryHandler}>Cancel</button>}
       </section>
       <section>
-        {isLoading ? <p className="loading">Loading...</p> : <MoviesList movies={movies} />}
+        {isLoading ? <p className="loading">Loading...</p> : moviesListMemo}
         {error && <p className="error">{error}</p>}
       </section>
     </React.Fragment>
   );
 }
 
-export default App; 
+export default App;
