@@ -10,6 +10,8 @@ function App() {
   const [error, setError] = useState(null);
   const retryTimeout = useRef(null);
 
+  const [newMovie, setNewMovie] = useState({ title: '', openingText: '', releaseDate: '' });
+
   const fetchMoviesHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -46,6 +48,16 @@ function App() {
     }
   }, []);
 
+  const addMovieHandler = useCallback((event) => {
+    event.preventDefault();
+    console.log('NewMovieObj', newMovie);
+  }, [newMovie]);
+
+  const inputChangeHandler = useCallback((event) => {
+    const { name, value } = event.target;
+    setNewMovie((prevMovie) => ({ ...prevMovie, [name]: value }));
+  }, []);
+
   const moviesListMemo = useMemo(() => {
     return <MoviesList movies={movies} />;
   }, [movies]);
@@ -53,6 +65,21 @@ function App() {
   return (
     <React.Fragment>
       <section>
+        <form onSubmit={addMovieHandler} className="form">
+          <div className="form-control">
+            <label htmlFor="title">Title</label>
+            <input type="text" id="title" name="title" value={newMovie.title} onChange={inputChangeHandler} />
+          </div>
+          <div className="form-control">
+            <label htmlFor="openingText">Opening Text</label>
+            <textarea id="openingText" name="openingText" value={newMovie.openingText} onChange={inputChangeHandler}></textarea>
+          </div>
+          <div className="form-control">
+            <label htmlFor="releaseDate">Release Date</label>
+            <input type="date" id="releaseDate" name="releaseDate" value={newMovie.releaseDate} onChange={inputChangeHandler} />
+          </div>
+          <button type="submit">Add Movie</button>
+        </form>
         {error && <button onClick={cancelRetryHandler}>Cancel</button>}
       </section>
       <section>
