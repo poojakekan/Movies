@@ -1,11 +1,27 @@
-section {
-  margin: 1rem auto;
-  width: 90%;
-  max-width: 40rem;
-  text-align: center;
-  background-color: white;
-  padding: 2rem;
-  border-radius: 12px;
+/* App.css */
+.form {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+}
+
+.form-control {
+  margin-bottom: 1rem;
+}
+
+.form-control label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.form-control input,
+.form-control textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 button {
@@ -26,4 +42,45 @@ button:hover,
 button:active {
   background-color: #460897;
   border-color: #460897;
+}
+
+.loading {
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.error {
+  color: red;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+/* MoviesList.module.css */
+.movies-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Movie.module.css */
+.movie {
+  margin: 1rem;
+  padding: 1rem;
+  background-color: #230052;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  border-radius: 12px;
+  text-align: center;
+  color: white;
+}
+
+.movie h2 {
+  font-size: 2rem;
+  color: #f7e702;
+}
+
+.movie h3 {
+  color: #eccf77;
+  margin: 0;
+  font-size: 1rem;
 }

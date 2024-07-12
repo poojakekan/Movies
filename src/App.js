@@ -16,7 +16,7 @@ function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get('https://api.example.com/movies'); // Replace with your API endpoint
+      const response = await axios.get('https://api.example.com/movies'); // Replace with your GET API endpoint
       const fetchedMovies = response.data.map((movie) => ({
         id: movie.id,
         title: movie.title,
@@ -48,9 +48,22 @@ function App() {
     }
   }, []);
 
-  const addMovieHandler = useCallback((event) => {
+  const addMovieHandler = useCallback(async (event) => {
     event.preventDefault();
-    console.log('NewMovieObj', newMovie);
+    try {
+      const response = await axios.post("https://swapi.dev/api/films/", newMovie); // Replace with your POST API endpoint
+      const addedMovie = {
+        id: response.data.id,
+        title: newMovie.title,
+        openingText: newMovie.openingText,
+        releaseDate: newMovie.releaseDate,
+      };
+      setMovies((prevMovies) => [...prevMovies, addedMovie]);
+      setNewMovie({ title: '', openingText: '', releaseDate: '' });
+      console.log('NewMovieObj', addedMovie);
+    } catch (error) {
+      setError('Failed to add movie.');
+    }
   }, [newMovie]);
 
   const inputChangeHandler = useCallback((event) => {
@@ -58,9 +71,20 @@ function App() {
     setNewMovie((prevMovie) => ({ ...prevMovie, [name]: value }));
   }, []);
 
+  const deleteMovieHandler = useCallback(async (movieId) => {
+    try {
+      await axios.delete(`https://swapi.dev/api/films/${movieId}`); // Replace with your DELETE API endpoint
+      setMovies((prevMovies) => prevMovies.filter((movie) => movie.id !== movieId));
+    } catch (error) {
+      setError('Failed to delete movie.');
+    }
+  }, []);
+
   const moviesListMemo = useMemo(() => {
-    return <MoviesList movies={movies} />;
-  }, [movies]);
+    return (
+      <MoviesList movies={movies} onDeleteMovie={deleteMovieHandler} />
+    );
+  }, [movies, deleteMovieHandler]);
 
   return (
     <React.Fragment>
